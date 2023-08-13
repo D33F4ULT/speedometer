@@ -61,7 +61,7 @@ export default function Home() {
   }
 
   return (
-    <main className="relative flex min-h-screen flex-col items-center justify-center bg-slate-500">
+    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-slate-500">
       <h1 className="absolute bg-slate-700 text-[50vw] font-bold">
         {speed > 0 ? `${speed.toFixed(0)}` : 0}
       </h1>
