@@ -8,17 +8,15 @@ export default function Home() {
   useEffect(() => {
     if (navigator.geolocation) {
       let previousPosition = null;
+      let previousSpeed = 0;
 
       const watchId = navigator.geolocation.watchPosition(
         (position) => {
           if (position.coords.speed !== null) {
             const speedInKmh = position.coords.speed * 3.6;
 
-            // Calculate acceleration using sensor data
-            const acceleration = calculateAcceleration(
-              position,
-              previousPosition
-            );
+            // Calculate acceleration using previous speed and current speed
+            const acceleration = (speedInKmh - previousSpeed) / 1; // Time interval = 1 second
 
             // Apply filtering or fusion algorithms to combine speed and acceleration
             const combinedSpeed = calculateCombinedSpeed(
@@ -29,8 +27,9 @@ export default function Home() {
             // Update speed state
             setSpeed(combinedSpeed);
 
-            // Update previous position
+            // Update previous position and speed
             previousPosition = position;
+            previousSpeed = speedInKmh;
           }
         },
         (error) => {
@@ -47,26 +46,11 @@ export default function Home() {
     }
   }, []);
 
-  // Implement a function to calculate acceleration
-  function calculateAcceleration(currentPosition, previousPosition) {
-    if (!previousPosition) {
-      return 0;
-    }
-
-    const timeDiff =
-      (currentPosition.timestamp - previousPosition.timestamp) / 1000;
-    const velocityDiff =
-      currentPosition.coords.speed - previousPosition.coords.speed;
-    const acceleration = velocityDiff / timeDiff;
-
-    return acceleration;
-  }
-
   // Implement a function to calculate combined speed using speed and acceleration
   function calculateCombinedSpeed(gpsSpeed, acceleration) {
     // Define weight factors for combining speed and acceleration
     const gpsWeight = 0.8; // Adjust this based on sensor reliability
-    const accelerationWeight = 0.2; // Adjust this based on sensor reliability
+    const accelerationWeight = 0.2; // Adjust this based on desired response
 
     // Calculate combined speed using weighted average
     const combinedSpeed =

@@ -12,22 +12,22 @@ export default function Home() {
       const watchId = navigator.geolocation.watchPosition(
         (position) => {
           if (position.coords.speed !== null) {
-            // Convert speed from meters per second to kilometers per hour
             const speedInKmh = position.coords.speed * 3.6;
 
-            if (previousPosition) {
-              // Calculate time difference between previous and current positions
-              const timeDiff =
-                (position.timestamp - previousPosition.timestamp) / 1000;
+            // Calculate acceleration using sensor data
+            const acceleration = calculateAcceleration(
+              position,
+              previousPosition
+            );
 
-              // Filter out low-speed or erratic data
-              if (speedInKmh > 1 && timeDiff > 0) {
-                // Apply dead reckoning or Kalman filtering here if desired
+            // Apply filtering or fusion algorithms to combine speed and acceleration
+            const combinedSpeed = calculateCombinedSpeed(
+              speedInKmh,
+              acceleration
+            );
 
-                // Update speed state
-                setSpeed(speedInKmh);
-              }
-            }
+            // Update speed state
+            setSpeed(combinedSpeed);
 
             // Update previous position
             previousPosition = position;
@@ -47,11 +47,39 @@ export default function Home() {
     }
   }, []);
 
+  // Implement a function to calculate acceleration
+  function calculateAcceleration(currentPosition, previousPosition) {
+    if (!previousPosition) {
+      return 0;
+    }
+
+    const timeDiff =
+      (currentPosition.timestamp - previousPosition.timestamp) / 1000;
+    const velocityDiff =
+      currentPosition.coords.speed - previousPosition.coords.speed;
+    const acceleration = velocityDiff / timeDiff;
+
+    return acceleration;
+  }
+
+  // Implement a function to calculate combined speed using speed and acceleration
+  function calculateCombinedSpeed(gpsSpeed, acceleration) {
+    // Define weight factors for combining speed and acceleration
+    const gpsWeight = 0.8; // Adjust this based on sensor reliability
+    const accelerationWeight = 0.2; // Adjust this based on sensor reliability
+
+    // Calculate combined speed using weighted average
+    const combinedSpeed =
+      gpsSpeed * gpsWeight + acceleration * accelerationWeight;
+
+    // Return the combined speed value
+    return combinedSpeed;
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-slate-500">
-      {/* <p>{speed}</p> */}
-      <h1 className="bg-slate-700 text-[31vw] font-bold">
-        {isNaN(speed) ? "?" : `${speed.toFixed(0)}`}
+      <h1 className="bg-slate-700 font-bold">
+        {speed > 0 ? `${speed.toFixed(0)}` : 0}
       </h1>
     </main>
   );
