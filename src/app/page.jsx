@@ -83,10 +83,10 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-slate-500">
-      {/* <p>{speed}</p> */}
+      <p>{speed}</p>
       {/* text-[31vw]  */}
       <h1 className="bg-slate-700 font-bold">
-        {speed > 0 ? `${speed.toFixed(0)} km/h` : "Waiting for data..."}
+        {speed > 0 ? `${speed.toFixed(0)} km/h` : 0}
       </h1>
     </main>
   );
