@@ -29,7 +29,9 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-slate-500">
-      <h1 className="bg-slate-700 text-[31vw]">
+      <p>{speed}</p>
+      {/* text-[31vw] */}
+      <h1 className="bg-slate-700">
         {speed !== null ? `${speed.toFixed(2)} m/s` : "Calculating..."}
       </h1>
     </main>
