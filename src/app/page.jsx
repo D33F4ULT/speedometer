@@ -86,7 +86,7 @@ export default function Home() {
       {/* <p>{speed}</p> */}
       {/* text-[31vw]  */}
       <h1 className="bg-slate-700 font-bold">
-        {speed > 0 ? `${speed.toFixed(2)} km/h` : "Waiting for data..."}
+        {speed > 0 ? `${speed.toFixed(0)} km/h` : "Waiting for data..."}
       </h1>
     </main>
   );
