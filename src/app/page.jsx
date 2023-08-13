@@ -49,8 +49,8 @@ export default function Home() {
   // Implement a function to calculate combined speed using speed and acceleration
   function calculateCombinedSpeed(gpsSpeed, acceleration) {
     // Define weight factors for combining speed and acceleration
-    const gpsWeight = 0.8; // Adjust this based on sensor reliability
-    const accelerationWeight = 0.2; // Adjust this based on desired response
+    const gpsWeight = 0.7; // Adjust this based on sensor reliability
+    const accelerationWeight = 0.3; // Adjust this based on desired response
 
     // Calculate combined speed using weighted average
     const combinedSpeed =
