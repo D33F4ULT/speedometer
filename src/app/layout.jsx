@@ -20,6 +20,8 @@ export default function RootLayout({ children }) {
         <meta name="theme-color" content="#000000" />
         <link rel="apple-touch-icon" href="/icon.png" />
         <link rel="apple-touch-startup-image" href="/icon.png" />
+        <link rel="icon" href="/favicon.ico" />
+        <title>Speedometer</title>
       </head>
       <body className={inter.className}>{children}</body>
     </html>
