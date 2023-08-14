@@ -10,8 +10,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   // Conditionally use pwacompat only on the client-side
-  if (typeof window !== "undefined") {
-    require("pwacompat"); // Use pwacompat here (client-side only)
+  if (process.isClient) {
+    window.addEventListener("load", () => import("pwacompat"));
   }
   return (
     <html lang="en">
