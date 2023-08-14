@@ -1,6 +1,10 @@
 {
   "icons": [
     {
+      "src": "/favicon.ico",
+      "type": "image/x-icon"
+    },
+    {
       "src": "windows11/SmallTile.scale-100.png",
       "sizes": "71x71"
     },
