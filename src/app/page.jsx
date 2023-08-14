@@ -81,7 +81,7 @@ export default function Home() {
 
       {/*REVERSE LANDSCAPE MODE */}
       {isReverseLandscape && (
-        <h1 className="absolute flex flex-col gap-1 justify-center text-center text-[50vw] font-bold">
+        <h1 className="absolute flex flex-col gap-1 scale-x-[-1] justify-center text-center text-[50vw] font-bold">
           {speed > 0 ? `${speed.toFixed(0)}` : 0}
         </h1>
       )}
