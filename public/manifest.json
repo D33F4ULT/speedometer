@@ -1,34 +1,20 @@
 {
+  "background_color": "#000000",
+  "description": "Speed tracking app using GPS",
+  "dir": "auto",
+  "display": "standalone",
   "name": "Speedometer",
+  "orientation": "any",
+  "scope": "/",
   "short_name": "Speedometer",
+  "start_url": "/",
+  "theme_color": "#000000",
+  "categories": ["utilities"],
   "icons": [
     {
-      "src": "public/manifest-icon-192.maskable.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "public/manifest-icon-192.maskable.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "public/manifest-icon-512.maskable.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "public/manifest-icon-512.maskable.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "src": "/favicon.ico",
+      "type": "image/x-icon"
     }
   ],
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#000000"
+  "lang": "en"
 }
