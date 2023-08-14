@@ -17,7 +17,10 @@ export default function Home() {
         className="-mt-40"
       />
 
-      <Link href="/speedometer" className="bg">
+      <Link
+        href="/speedometer"
+        className="border-[1px] border-white py-1 px-4 rounded-md hover:bg-white hover:text-black active:scale-95 transition"
+      >
         START
       </Link>
     </main>
