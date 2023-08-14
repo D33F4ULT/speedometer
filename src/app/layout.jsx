@@ -1,6 +1,5 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
-import "pwacompat";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -10,6 +9,10 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  // Conditionally use pwacompat only on the client-side
+  if (typeof window !== "undefined") {
+    require("pwacompat"); // Use pwacompat here (client-side only)
+  }
   return (
     <html lang="en">
       <head>
