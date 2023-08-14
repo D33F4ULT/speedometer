@@ -10,10 +10,15 @@ export const useOrientationStates = () => {
 
       if (media === "(orientation: landscape)") {
         setIsLandscape(matches);
+        setIsReverseLandscape(false);
       } else if (
         media === "(orientation: landscape) and (transform: rotate(180deg))"
       ) {
         setIsReverseLandscape(matches);
+        setIsLandscape(false);
+      } else {
+        setIsLandscape(false);
+        setIsReverseLandscape(false);
       }
     };
 
