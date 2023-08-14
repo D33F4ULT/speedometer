@@ -12,7 +12,7 @@ export const useOrientationStates = () => {
         setIsLandscape(matches);
         setIsReverseLandscape(false);
       } else if (
-        media === "(orientation: landscape) and (transform: rotate(180deg))"
+        media === "(orientation: portrait) and (transform: rotate(-90deg))"
       ) {
         setIsReverseLandscape(matches);
         setIsLandscape(false);
@@ -25,7 +25,7 @@ export const useOrientationStates = () => {
     // Initial orientation check
     const landscapeMediaQuery = window.matchMedia("(orientation: landscape)");
     const reverseLandscapeMediaQuery = window.matchMedia(
-      "(orientation: landscape) and (transform: rotate(180deg))"
+      "(orientation: portrait) and (transform: rotate(-90deg))"
     );
 
     handleOrientationChange(landscapeMediaQuery);
