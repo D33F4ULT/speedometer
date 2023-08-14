@@ -75,14 +75,14 @@ export default function Home() {
       {/* LANDSCAPE MODE */}
       {isLandscape && (
         <h1 className="absolute flex flex-col gap-1 justify-center text-center text-[50vw] font-bold">
-          {speed > 0 ? `${speed.toFixed(0)} 172` : "172"}
+          {speed > 0 ? `${speed.toFixed(0)}` : 0}
         </h1>
       )}
 
       {/*REVERSE LANDSCAPE MODE */}
       {isReverseLandscape && (
         <h1 className="absolute flex flex-col gap-1 scale-x-[-1] justify-center text-center text-[50vw] font-bold">
-          {speed > 0 ? `${speed.toFixed(0)} 172` : "172"}
+          {speed > 0 ? `${speed.toFixed(0)}` : 0}
         </h1>
       )}
     </main>
