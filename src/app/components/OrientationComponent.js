@@ -5,49 +5,22 @@ export const useOrientationStates = () => {
   const [isReverseLandscape, setIsReverseLandscape] = useState(false);
 
   useEffect(() => {
-    const handleOrientationChange = (event) => {
-      const { matches, media } = event;
+    const handleOrientationChange = () => {
+      const orientationAngle = window.orientation;
 
-      if (media === "(orientation: landscape)") {
-        setIsLandscape(matches);
-        setIsReverseLandscape(false);
-      } else if (
-        media === "(orientation: portrait) and (transform: rotate(-90deg))"
-      ) {
-        setIsReverseLandscape(matches);
-        setIsLandscape(false);
-      } else {
-        setIsLandscape(false);
-        setIsReverseLandscape(false);
-      }
+      setIsLandscape(orientationAngle === 90);
+      setIsReverseLandscape(orientationAngle === -90);
     };
 
     // Initial orientation check
-    const landscapeMediaQuery = window.matchMedia("(orientation: landscape)");
-    const reverseLandscapeMediaQuery = window.matchMedia(
-      "(orientation: portrait) and (transform: rotate(-90deg))"
-    );
+    handleOrientationChange();
 
-    handleOrientationChange(landscapeMediaQuery);
-    handleOrientationChange(reverseLandscapeMediaQuery);
+    // Add orientationchange event listener to detect orientation changes
+    window.addEventListener("orientationchange", handleOrientationChange);
 
-    // Add listeners to detect orientation changes
-    landscapeMediaQuery.addEventListener("change", handleOrientationChange);
-    reverseLandscapeMediaQuery.addEventListener(
-      "change",
-      handleOrientationChange
-    );
-
-    // Clean up event listeners on unmount
+    // Clean up event listener on unmount
     return () => {
-      landscapeMediaQuery.removeEventListener(
-        "change",
-        handleOrientationChange
-      );
-      reverseLandscapeMediaQuery.removeEventListener(
-        "change",
-        handleOrientationChange
-      );
+      window.removeEventListener("orientationchange", handleOrientationChange);
     };
   }, []);
 
