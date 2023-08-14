@@ -4,10 +4,6 @@ import { useEffect, useState } from "react";
 import { useOrientationStates } from "./components/OrientationComponent";
 
 export default function Home() {
-  if (typeof navigator.serviceWorker !== "undefined") {
-    navigator.serviceWorker.register("sw.js");
-  }
-
   const [speed, setSpeed] = useState(0);
   const { isLandscape, isReverseLandscape } = useOrientationStates();
 
