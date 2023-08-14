@@ -18,6 +18,6 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  overflow: hidden;
+  /* overflow: hidden; */
   background: #000000;
 }
