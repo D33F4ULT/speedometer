@@ -70,7 +70,7 @@ export default function RootLayout({ children }) {
           rel="apple-touch-startup-image"
         />
       </head>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className + "overflow-hidden"}>{children}</body>
     </html>
   );
 }
