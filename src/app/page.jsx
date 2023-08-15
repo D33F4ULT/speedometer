@@ -18,7 +18,7 @@ export default function Home() {
               src="/icons/location-dot.svg"
               width={16}
               height={16}
-              alt="gps"
+              alt="gps icon"
               priority
             />
             GPS
@@ -33,7 +33,7 @@ export default function Home() {
               src="/icons/ethernet.svg"
               width={18}
               height={18}
-              alt="obd"
+              alt="obd icon"
               priority
             />
             OBD-II
