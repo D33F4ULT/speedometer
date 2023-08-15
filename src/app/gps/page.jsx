@@ -1,24 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useOrientationStates } from "../components/OrientationComponent";
 
 export default function Home() {
   const [speed, setSpeed] = useState(0);
+  const { isLandscape, isReverseLandscape } = useOrientationStates();
 
   useEffect(() => {
     if (navigator.geolocation) {
       let previousPosition = null;
+      let previousSpeed = 0;
 
       const watchId = navigator.geolocation.watchPosition(
         (position) => {
           if (position.coords.speed !== null) {
             const speedInKmh = position.coords.speed * 3.6;
 
-            // Calculate acceleration using sensor data
-            const acceleration = calculateAcceleration(
-              position,
-              previousPosition
-            );
+            // Calculate acceleration using previous speed and current speed
+            const acceleration = (speedInKmh - previousSpeed) / 1; // Time interval = 1 second
 
             // Apply filtering or fusion algorithms to combine speed and acceleration
             const combinedSpeed = calculateCombinedSpeed(
@@ -29,8 +29,9 @@ export default function Home() {
             // Update speed state
             setSpeed(combinedSpeed);
 
-            // Update previous position
+            // Update previous position and speed
             previousPosition = position;
+            previousSpeed = speedInKmh;
           }
         },
         (error) => {
@@ -47,26 +48,11 @@ export default function Home() {
     }
   }, []);
 
-  // Implement a function to calculate acceleration
-  function calculateAcceleration(currentPosition, previousPosition) {
-    if (!previousPosition) {
-      return 0;
-    }
-
-    const timeDiff =
-      (currentPosition.timestamp - previousPosition.timestamp) / 1000;
-    const velocityDiff =
-      currentPosition.coords.speed - previousPosition.coords.speed;
-    const acceleration = velocityDiff / timeDiff;
-
-    return acceleration;
-  }
-
   // Implement a function to calculate combined speed using speed and acceleration
   function calculateCombinedSpeed(gpsSpeed, acceleration) {
     // Define weight factors for combining speed and acceleration
-    const gpsWeight = 0.8; // Adjust this based on sensor reliability
-    const accelerationWeight = 0.2; // Adjust this based on sensor reliability
+    const gpsWeight = 0.7; // Adjust this based on sensor reliability
+    const accelerationWeight = 0.3; // Adjust this based on desired response
 
     // Calculate combined speed using weighted average
     const combinedSpeed =
@@ -77,10 +63,28 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-slate-500">
-      <h1 className="bg-slate-700 font-bold">
-        {speed > 0 ? `${speed.toFixed(0)}` : 0}
-      </h1>
+    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-black">
+      {/* PORTRAIT MODE */}
+      {!isLandscape && !isReverseLandscape && (
+        <h1 className="absolute flex flex-col gap-1 justify-center text-center text-[10vw] font-bold">
+          {speed > 0 ? `${speed.toFixed(0)}` : 0}
+          <p className="text-sm">km/h</p>
+        </h1>
+      )}
+
+      {/* LANDSCAPE MODE */}
+      {isLandscape && (
+        <h1 className="absolute flex flex-col gap-1 justify-center text-center text-[50vw] font-bold">
+          {speed > 0 ? `${speed.toFixed(0)}` : 0}
+        </h1>
+      )}
+
+      {/*REVERSE LANDSCAPE MODE */}
+      {isReverseLandscape && (
+        <h1 className="absolute flex flex-col gap-1 scale-x-[-1] justify-center text-center text-[50vw] font-bold">
+          {speed > 0 ? `${speed.toFixed(0)}` : 0}
+        </h1>
+      )}
     </main>
   );
 }
