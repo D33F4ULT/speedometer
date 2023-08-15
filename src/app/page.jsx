@@ -19,6 +19,7 @@ export default function Home() {
               width={16}
               height={16}
               alt="gps"
+              priority
             />
             GPS
           </Link>
@@ -28,7 +29,13 @@ export default function Home() {
             href="obd"
             className="flex items-center gap-2 w-full py-2 px-4 justify-center hover:bg-slate-900"
           >
-            <Image src="/icons/ethernet.svg" width={18} height={18} alt="obd" />
+            <Image
+              src="/icons/ethernet.svg"
+              width={18}
+              height={18}
+              alt="obd"
+              priority
+            />
             OBD-II
           </Link>
         </li>
