@@ -2,48 +2,69 @@
 
 import { useEffect, useState } from "react";
 import { useOrientationStates } from "../components/OrientationComponent";
+import CustomConsole from "../components/customConsole";
 
 export default function Home() {
   const [speed, setSpeed] = useState(0);
-  const [serverData, setServerData] = useState(null);
   const { isLandscape, isReverseLandscape } = useOrientationStates();
 
   // Request permission to access Bluetooth devices
   async function requestBluetoothDevice() {
     try {
+      console.log("Requesting Bluetooth device...");
       const device = await navigator.bluetooth.requestDevice({
         acceptAllDevices: true,
       });
 
+      console.log("Selected device:", device);
+
       // Now that you have a device, you can establish a connection
       connectToDevice(device);
     } catch (error) {
-      console.error("Bluetooth error:", error);
+      console.log("[ERROR]:", error);
     }
   }
 
+  // Establish a GATT connection to the device
   async function connectToDevice(device) {
     try {
+      console.log("Connecting to device...");
       const server = await device.gatt.connect();
+
+      console.log("Connected to GATT server:", server);
+
       // Now you can interact with the GATT server and its services
-      setServerData(server);
     } catch (error) {
-      console.error("Connection error:", error);
+      console.log("[ERROR]:", error);
     }
   }
 
   return (
-    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-black">
+    <main className="relative flex min-h-screen flex-col p-2 items-center justify-center overflow-hidden bg-black">
       {/* PORTRAIT MODE */}
       {!isLandscape && !isReverseLandscape && (
         <>
+          <ul className=" border-2 mb-5 p-4 rounded-md">
+            <li>
+              Selected device: <span>none</span>
+            </li>
+
+            <li>
+              Connected: <span>false</span>
+            </li>
+          </ul>
+
           <button
             onClick={requestBluetoothDevice}
-            className=" bg-slate-200 text-black active:scale-95"
+            className=" bg-slate-200 text-black active:scale-95 px-2"
           >
             Request Bluetooth Device
           </button>
-          <p>Server: {serverData || "no data"}</p>
+          {/* <p>Server: {serverData || "no data"}</p> */}
+          <div className=" flex flex-col max-w-[500px] w-full">
+            log:
+            <CustomConsole />
+          </div>
         </>
       )}
 

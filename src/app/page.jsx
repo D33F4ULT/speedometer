@@ -7,7 +7,7 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden p-5 bg-black">
+    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden p-2 bg-black">
       <ul className="flex flex-col items-center max-w-[200px] w-full gap-4">
         <li className=" border-2 w-full flex flex-col items-center rounded-md overflow-hidden active:scale-95">
           <Link
