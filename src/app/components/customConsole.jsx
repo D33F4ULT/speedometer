@@ -19,6 +19,14 @@ function CustomConsole() {
       element.scroll({ top: element.scrollHeight, behavior: "smooth" });
     };
 
+    console.error = (...args) => {
+      originalConsoleLog(...args);
+      captureConsoleMessages(args.join(" "));
+
+      const element = document.getElementById("log");
+      element.scroll({ top: element.scrollHeight, behavior: "smooth" });
+    };
+
     // Clean up by restoring the original console.log
     return () => {
       console.log = originalConsoleLog;
