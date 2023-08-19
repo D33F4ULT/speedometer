@@ -80,16 +80,20 @@ export default function Home() {
     const value = event.target.value;
     console.log("Received: ", value);
 
-    // Convert the received Uint8Array to a string
-    const receivedData = new TextDecoder().decode(value);
-    console.log("Received Decoded: ", receivedData);
+    // Convert the received DataView to a Uint8Array
+    const dataView = new Uint8Array(value.buffer);
+    console.log("Received data converted to Uint8Array: ", dataView);
 
-    // Process the received data to extract engine RPM
-    // You need to know the response format of your ELM327 adapter
-    // and the appropriate command to retrieve engine RPM
-    // const engineRpm = /* extract engine RPM from receivedData */;
-    // ((parseInt(byteA, 16) * 256) + parseInt(byteB, 16)) / 4;
-    // setSpeed(engineRpm); // Assuming you want to display RPM in the speed field
+    // Extract the engine RPM data (assuming byteA and byteB are the RPM bytes)
+    const byteA = dataView[0];
+    const byteB = dataView[1];
+
+    // Calculate the engine RPM using the formula you mentioned
+    const engineRpm = (byteA * 256 + byteB) / 4;
+    console.log("Engine RPM: ", engineRpm);
+
+    // Update the state or perform any other action with the engine RPM value
+    setSpeed(engineRpm);
   }
 
   // Write commands to the device
@@ -177,7 +181,7 @@ export default function Home() {
             onClick={() => sendObdCommand(selectedCharacteristic, "ATAT2")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
-            ATAT2 - Turn adaptive timing to 2
+            ATAT2 - Set adaptive timing to 2
           </button>
           <button
             onClick={() => sendObdCommand(selectedCharacteristic, "ATSP0")}
