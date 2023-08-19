@@ -59,9 +59,9 @@ export default function Home() {
       // Start listening for notifications only if not already listening
       if (!isListeningForNotifications) {
         console.log("Start Notifications...");
-        await characteristic.startNotifications();
+        await characteristic1.startNotifications();
         setIsListeningForNotifications(true);
-        characteristic.addEventListener(
+        characteristic1.addEventListener(
           "characteristicvaluechanged",
           handleCharacteristicValueChanged
         );
