@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useOrientationStates } from "../components/OrientationComponent";
 import CustomConsole from "../components/customConsole";
+import { data } from "autoprefixer";
 
 export default function Home() {
   const [selectedDeviceName, setSelectedDeviceName] = useState("");
@@ -86,16 +87,19 @@ export default function Home() {
     const dataView = new Uint8Array(value.buffer);
     console.log("Received data converted to Uint8Array: ", dataView);
 
-    // Extract the engine RPM data (assuming byteA and byteB are the RPM bytes)
-    const byteA = dataView[0];
-    const byteB = dataView[1];
+    const decoded = new TextDecoder().decode(dataView);
+    console.log("Uint8Array decoded: ", decoded);
 
-    // Calculate the engine RPM using the formula you mentioned
-    const engineRpm = (byteA * 256 + byteB) / 4;
-    console.log("Engine RPM: ", engineRpm);
+    // Extract the engine RPM data (assuming byteA and byteB are the RPM bytes)
+    // const byteA = dataView[0];
+    // const byteB = dataView[1];
+
+    // // Calculate the engine RPM using the formula you mentioned
+    // const engineRpm = (byteA * 256 + byteB) / 4;
+    // console.log("Engine RPM: ", engineRpm);
 
     // Update the state or perform any other action with the engine RPM value
-    setSpeed(engineRpm);
+    // setSpeed(engineRpm);
 
     stopHandleCharacteristic = true;
 
