@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import { useOrientationStates } from "../components/OrientationComponent";
 import CustomConsole from "../components/customConsole";
-import { data } from "autoprefixer";
 
 export default function Home() {
   const [selectedDeviceName, setSelectedDeviceName] = useState("");
   const [connectedToDevice, setConectedToDevice] = useState(false);
-  const [selectedCharacteristic, setSelectedCharacteristic] = useState(null); // hold the characteristic
+  const [writeCharacteristic, setWriteCharacteristic] = useState(null);
+  const [notifyCharacteristic, setNotifyCharacteristic] = useState(null);
   const [isListeningForNotifications, setIsListeningForNotifications] =
     useState(false);
   const [speed, setSpeed] = useState(0);
@@ -52,36 +52,34 @@ export default function Home() {
       const characteristic2 = await service.getCharacteristic(
         characteristicUUID2
       );
-      setSelectedCharacteristic(characteristic1); // Set the characteristic in the state
+      setNotifyCharacteristic(characteristic1);
+      setWriteCharacteristic(characteristic2);
 
       console.log("Connected to GATT server: ", server);
       setConectedToDevice(true);
 
-      // Start listening for notifications only if not already listening
-      if (!isListeningForNotifications) {
-        console.log("Start Notifications...");
-        await characteristic1.startNotifications();
-        setIsListeningForNotifications(true);
-      }
+      // Start listening for notifications on characterictic1
+      console.log("Start Notifications...");
+      await characteristic1.startNotifications();
+      characteristic1.addEventListener(
+        "characteristicvaluechanged",
+        handleCharacteristicValueChanged
+      );
+      setIsListeningForNotifications(true);
 
       // Now you can interact with the GATT server and its services
     } catch (error) {
       console.log("[ERROR]:", error);
       setConectedToDevice(false);
+      setIsListeningForNotifications(false);
     }
   }
 
-  let stopHandleCharacteristic = false;
-
   // Process received notifications
   function handleCharacteristicValueChanged(event) {
-    if (stopHandleCharacteristic === true) {
-      return;
-    }
-
-    console.log("Characteristic Value Changed!");
+    console.log("Characteristic1 Value Changed!");
     const value = event.target.value;
-    console.log("Received: ", value.toString());
+    console.log("Received: ", value);
 
     // Convert the received DataView to a Uint8Array
     const dataView = new Uint8Array(value.buffer);
@@ -100,13 +98,6 @@ export default function Home() {
 
     // Update the state or perform any other action with the engine RPM value
     // setSpeed(engineRpm);
-
-    stopHandleCharacteristic = true;
-
-    characteristic.removeEventListener(
-      "characteristicvaluechanged",
-      handleCharacteristicValueChanged
-    );
   }
 
   // Write commands to the device
@@ -120,16 +111,6 @@ export default function Home() {
       console.log("Sending: ", commandArray, " to device...");
       await characteristic.writeValue(commandArray);
       console.log("Sent successfully!");
-
-      // Introduce a delay before reading the response
-      // await new Promise((resolve) => setTimeout(resolve, 1000)); // Adjust the delay as needed
-
-      stopHandleCharacteristic = false;
-      // Now you can start listening for the response
-      characteristic.addEventListener(
-        "characteristicvaluechanged",
-        handleCharacteristicValueChanged
-      );
     } catch (error) {
       console.error("Error sending OBD command:", error);
     }
@@ -158,6 +139,19 @@ export default function Home() {
                 {connectedToDevice.toString()}
               </span>
             </li>
+
+            <li>
+              Listening for notifications:{" "}
+              <span
+                className={
+                  isListeningForNotifications
+                    ? "text-green-600"
+                    : "text-red-500"
+                }
+              >
+                {isListeningForNotifications.toString()}
+              </span>
+            </li>
           </ul>
 
           <button
@@ -170,43 +164,43 @@ export default function Home() {
           {/* SETUP BUTTONS */}
           <p>SETUP COMMANDS:</p>
           <button
-            onClick={() => sendObdCommand(selectedCharacteristic, "ATZ")}
+            onClick={() => sendObdCommand(writeCharacteristic, "ATZ")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
             ATZ - Reset and returns ELM identification
           </button>
           <button
-            onClick={() => sendObdCommand(selectedCharacteristic, "ATL0")}
+            onClick={() => sendObdCommand(writeCharacteristic, "ATL0")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
             ATL0 - Turn off extra line feed
           </button>
           <button
-            onClick={() => sendObdCommand(selectedCharacteristic, "ATS0")}
+            onClick={() => sendObdCommand(writeCharacteristic, "ATS0")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
             ATS0 - Disable spaces in in output
           </button>
           <button
-            onClick={() => sendObdCommand(selectedCharacteristic, "ATH0")}
+            onClick={() => sendObdCommand(writeCharacteristic, "ATH0")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
             ATH0 - Turn off headers
           </button>
           <button
-            onClick={() => sendObdCommand(selectedCharacteristic, "ATE0")}
+            onClick={() => sendObdCommand(writeCharacteristic, "ATE0")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
             ATE0 - Turn off echo
           </button>
           <button
-            onClick={() => sendObdCommand(selectedCharacteristic, "ATAT2")}
+            onClick={() => sendObdCommand(writeCharacteristic, "ATAT2")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
             ATAT2 - Set adaptive timing to 2
           </button>
           <button
-            onClick={() => sendObdCommand(selectedCharacteristic, "ATSP0")}
+            onClick={() => sendObdCommand(writeCharacteristic, "ATSP0")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
             ATSP0 - Set Protocol to auto
@@ -214,7 +208,7 @@ export default function Home() {
 
           <p>GET COMMANDS:</p>
           <button
-            onClick={() => sendObdCommand(selectedCharacteristic, "010C")}
+            onClick={() => sendObdCommand(writeCharacteristic, "010C")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
             010C - ENGINE RPM
