@@ -80,7 +80,7 @@ export default function Home() {
 
     console.log("Characteristic Value Changed!");
     const value = event.target.value;
-    console.log("Received: ", value);
+    console.log("Received: ", value.toString());
 
     // Convert the received DataView to a Uint8Array
     const dataView = new Uint8Array(value.buffer);
