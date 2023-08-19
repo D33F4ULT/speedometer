@@ -32,7 +32,7 @@ export default function Home() {
   }
 
   // Establish a GATT connection to the device
-  const combinedUUID = "00001101-0000-1000-8000-00805f9b34fb";
+  const combinedUUID = "0000fff0-0000-1000-8000-00805f9b34fb";
   async function connectToDevice(device) {
     try {
       console.log("Connecting to device...");
