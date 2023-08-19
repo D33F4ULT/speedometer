@@ -13,12 +13,17 @@ export default function Home() {
   const [speed, setSpeed] = useState(0);
   const { isLandscape, isReverseLandscape } = useOrientationStates();
 
+  const combinedUUID = "0000fff0-0000-1000-8000-00805f9b34fb";
+  const characteristicUUID1 = "0000fff1-0000-1000-8000-00805f9b34fb";
+  const characteristicUUID2 = "0000fff2-0000-1000-8000-00805f9b34fb";
+
   // Request permission to access Bluetooth devices
   async function requestBluetoothDevice() {
     try {
       console.log("Requesting Bluetooth device...");
       const device = await navigator.bluetooth.requestDevice({
         acceptAllDevices: true,
+        optionalServices: [combinedUUID], // Add the UUID of the desired service
       });
 
       console.log("Selected device:", device.name);
@@ -32,16 +37,21 @@ export default function Home() {
   }
 
   // Establish a GATT connection to the device
-  const combinedUUID = "0000fff0-0000-1000-8000-00805f9b34fb";
   async function connectToDevice(device) {
     try {
       console.log("Connecting to device...");
       const server = await device.gatt.connect();
       console.log("Retrieving primary service...");
       const service = await server.getPrimaryService(combinedUUID);
-      console.log("Retrieving characteristic...");
-      const characteristic = await service.getCharacteristic(combinedUUID);
-      setSelectedCharacteristic(characteristic); // Set the characteristic in the state
+      console.log("Retrieving characteristic UUID1...");
+      const characteristic1 = await service.getCharacteristic(
+        characteristicUUID1
+      );
+      console.log("Retrieving characteristic UUID2...");
+      const characteristic2 = await service.getCharacteristic(
+        characteristicUUID2
+      );
+      setSelectedCharacteristic(characteristic1); // Set the characteristic in the state
 
       console.log("Connected to GATT server: ", server);
       setConectedToDevice(true);
