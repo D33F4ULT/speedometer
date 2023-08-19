@@ -61,10 +61,6 @@ export default function Home() {
         console.log("Start Notifications...");
         await characteristic1.startNotifications();
         setIsListeningForNotifications(true);
-        characteristic1.addEventListener(
-          "characteristicvaluechanged",
-          handleCharacteristicValueChanged
-        );
       }
 
       // Now you can interact with the GATT server and its services
@@ -74,8 +70,14 @@ export default function Home() {
     }
   }
 
+  let stopHandleCharacteristic = false;
+
   // Process received notifications
   function handleCharacteristicValueChanged(event) {
+    if (stopHandleCharacteristic === true) {
+      return;
+    }
+
     console.log("Characteristic Value Changed!");
     const value = event.target.value;
     console.log("Received: ", value);
@@ -94,6 +96,13 @@ export default function Home() {
 
     // Update the state or perform any other action with the engine RPM value
     setSpeed(engineRpm);
+
+    stopHandleCharacteristic = true;
+
+    characteristic.removeEventListener(
+      "characteristicvaluechanged",
+      handleCharacteristicValueChanged
+    );
   }
 
   // Write commands to the device
@@ -105,9 +114,18 @@ export default function Home() {
 
       // Send the command to the ELM327 adapter
       console.log("Sending: ", commandArray, " to device...");
-
       await characteristic.writeValue(commandArray);
       console.log("Sent successfully!");
+
+      // Introduce a delay before reading the response
+      // await new Promise((resolve) => setTimeout(resolve, 1000)); // Adjust the delay as needed
+
+      stopHandleCharacteristic = false;
+      // Now you can start listening for the response
+      characteristic.addEventListener(
+        "characteristicvaluechanged",
+        handleCharacteristicValueChanged
+      );
     } catch (error) {
       console.error("Error sending OBD command:", error);
     }
