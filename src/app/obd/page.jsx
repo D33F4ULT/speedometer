@@ -44,27 +44,32 @@ export default function Home() {
       const server = await device.gatt.connect();
       console.log("Retrieving primary service...");
       const service = await server.getPrimaryService(combinedUUID);
+
       console.log("Retrieving characteristic UUID1...");
       const characteristic1 = await service.getCharacteristic(
         characteristicUUID1
       );
+      setNotifyCharacteristic(characteristic1);
+      console.log("Notify Characteristic: ", notifyCharacteristic);
+
       console.log("Retrieving characteristic UUID2...");
       const characteristic2 = await service.getCharacteristic(
         characteristicUUID2
       );
-      setNotifyCharacteristic(characteristic1);
       setWriteCharacteristic(characteristic2);
+      console.log("Write Characteristic: ", writeCharacteristic);
 
       console.log("Connected to GATT server: ", server);
       setConectedToDevice(true);
 
-      // Start listening for notifications on characterictic1
+      // Start listening for notifications on notify characterictic
       console.log("Start Notifications...");
-      await characteristic1.startNotifications();
-      characteristic1.addEventListener(
+      await notifyCharacteristic.startNotifications();
+      notifyCharacteristic.addEventListener(
         "characteristicvaluechanged",
         handleCharacteristicValueChanged
       );
+      console.log("Notifications Started on: ", notifyCharacteristic);
       setIsListeningForNotifications(true);
 
       // Now you can interact with the GATT server and its services
@@ -100,7 +105,7 @@ export default function Home() {
   }
 
   // Write commands to the device
-  async function sendObdCommand(characteristic, command) {
+  async function sendObdCommand(command) {
     try {
       // Convert the ASCII command to Uint8Array
       console.log("Converting ", command, " to Uint8Array...");
@@ -109,7 +114,7 @@ export default function Home() {
 
       // Send the command to the ELM327 adapter
       console.log("Sending: ", commandArray, " to device...");
-      await characteristic.writeValue(commandArray);
+      await writeCharacteristic.writeValue(commandArray);
       console.log("Sent successfully!");
     } catch (error) {
       console.error("Error sending OBD command:", error);
@@ -164,43 +169,43 @@ export default function Home() {
           {/* SETUP BUTTONS */}
           <p>SETUP COMMANDS:</p>
           <button
-            onClick={() => sendObdCommand(writeCharacteristic, "ATZ")}
+            onClick={() => sendObdCommand("ATZ")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
             ATZ - Reset and returns ELM identification
           </button>
           <button
-            onClick={() => sendObdCommand(writeCharacteristic, "ATL0")}
+            onClick={() => sendObdCommand("ATL0")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
             ATL0 - Turn off extra line feed
           </button>
           <button
-            onClick={() => sendObdCommand(writeCharacteristic, "ATS0")}
+            onClick={() => sendObdCommand("ATS0")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
             ATS0 - Disable spaces in in output
           </button>
           <button
-            onClick={() => sendObdCommand(writeCharacteristic, "ATH0")}
+            onClick={() => sendObdCommand("ATH0")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
             ATH0 - Turn off headers
           </button>
           <button
-            onClick={() => sendObdCommand(writeCharacteristic, "ATE0")}
+            onClick={() => sendObdCommand("ATE0")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
             ATE0 - Turn off echo
           </button>
           <button
-            onClick={() => sendObdCommand(writeCharacteristic, "ATAT2")}
+            onClick={() => sendObdCommand("ATAT2")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
             ATAT2 - Set adaptive timing to 2
           </button>
           <button
-            onClick={() => sendObdCommand(writeCharacteristic, "ATSP0")}
+            onClick={() => sendObdCommand("ATSP0")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
             ATSP0 - Set Protocol to auto
@@ -208,7 +213,7 @@ export default function Home() {
 
           <p>GET COMMANDS:</p>
           <button
-            onClick={() => sendObdCommand(writeCharacteristic, "010C")}
+            onClick={() => sendObdCommand("010C")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
             010C - ENGINE RPM
