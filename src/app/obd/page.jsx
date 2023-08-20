@@ -11,7 +11,9 @@ export default function Home() {
   const [notifyCharacteristic, setNotifyCharacteristic] = useState(null);
   const [isListeningForNotifications, setIsListeningForNotifications] =
     useState(false);
+
   const [speed, setSpeed] = useState(0);
+  const [rpm, setRpm] = useState(0);
   const { isLandscape, isReverseLandscape } = useOrientationStates();
 
   const combinedUUID = "0000fff0-0000-1000-8000-00805f9b34fb";
@@ -82,19 +84,39 @@ export default function Home() {
 
   // Process received notifications
   function handleCharacteristicValueChanged(event) {
-    console.log("-- [RECEIVED DATA]");
+    // console.log("-- [RECEIVED DATA]");
     const value = event.target.value;
     // console.log("Received (Hex): ", value);
 
     const dataView = new Uint8Array(value.buffer);
-    console.log("-- Received bytes: ", dataView);
+    // console.log("-- Received bytes: ", dataView);
 
     const decoded = new TextDecoder().decode(dataView);
-    console.log("-- Decoded: ", decoded);
+    console.log("-- Response: ", decoded);
 
     // Extract the engine RPM data (assuming byteA and byteB are the RPM bytes)
     // const byteA = dataView[0];
     // const byteB = dataView[1];
+
+    const responseArray = decoded.split(" ");
+
+    // calculate the EngineRPM value
+    if (responseArray[1] === "0C") {
+      const byteA = responseArray[2];
+      const byteB = responseArray[3];
+
+      const engineRPM = (parseInt(byteA, 16) * 256 + parseInt(byteB, 16)) / 4;
+      console.log("Engine RPM: ", engineRPM);
+      setRpm(engineRPM);
+    }
+    // calculate the Vehicle Speed value
+    if (responseArray[1] === "0D") {
+      const byteA = responseArray[2];
+
+      const vehicleSpeed = parseInt(byteA, 16);
+      console.log("Vehicle Speed: ", vehicleSpeed);
+      setSpeed(vehicleSpeed);
+    }
 
     // // Calculate the engine RPM using the formula you mentioned
     // const engineRpm = (byteA * 256 + byteB) / 4;
@@ -158,6 +180,17 @@ export default function Home() {
             </li>
           </ul>
 
+          <div className="flex gap-4">
+            <div className="bg-slate-900 p-2 rounded-md flex flex-col justify-center items-center">
+              <h2 className=" text-lg font-bold text-white">{rpm}</h2>
+              <span className="text-sm font text-slate-400">Engine RPM</span>
+            </div>
+            <div className="bg-slate-900 p-2 rounded-md flex flex-col justify-center items-center">
+              <h2 className=" text-lg font-bold text-white">{speed}</h2>
+              <span className="text-sm font text-slate-400">Vehicle Speed</span>
+            </div>
+          </div>
+
           <button
             onClick={requestBluetoothDevice}
             className=" bg-slate-200 mt-2 text-black active:scale-95 px-2"
@@ -185,12 +218,12 @@ export default function Home() {
           >
             ATL0 - Turn off extra line feed
           </button>
-          <button
+          {/* <button
             onClick={() => sendObdCommand("ATS0")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
             ATS0 - ?Disable spaces in in output
-          </button>
+          </button> */}
           {/* <button
             onClick={() => sendObdCommand("ATH0")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
@@ -198,10 +231,10 @@ export default function Home() {
             ATH0 - Turn off headers
           </button> */}
           <button
-            onClick={() => sendObdCommand("ATAT2")}
+            onClick={() => sendObdCommand("ATAT1")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
-            ATAT2 - ?Set adaptive timing to 2
+            ATAT1 - ?Set adaptive timing to 1
           </button>
           {/* <button
             onClick={() => sendObdCommand("ATSP0")}
@@ -222,6 +255,12 @@ export default function Home() {
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
             010C - ENGINE RPM
+          </button>
+          <button
+            onClick={() => sendObdCommand("010D")}
+            className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
+          >
+            010D - Vehicle speed
           </button>
 
           {/* <p>Server: {serverData || "no data"}</p> */}
