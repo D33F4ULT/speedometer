@@ -87,7 +87,7 @@ export default function Home() {
     console.log("Received (Hex): ", value);
 
     const dataView = new Uint8Array(value.buffer);
-    console.log("Received data converted to Uint8Array: ", dataView);
+    console.log("Converted to Uint8Array: ", dataView);
 
     const decoded = new TextDecoder().decode(dataView);
     console.log("Uint8Array decoded: ", decoded);
@@ -217,6 +217,7 @@ export default function Home() {
           >
             010C - ENGINE RPM
           </button>
+
           {/* <p>Server: {serverData || "no data"}</p> */}
           <div className=" flex flex-col max-w-[500px] w-full">
             log:
