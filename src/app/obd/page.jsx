@@ -84,13 +84,13 @@ export default function Home() {
   function handleCharacteristicValueChanged(event) {
     console.log("[RECEIVED DATA]");
     const value = event.target.value;
-    console.log("Received (Hex): ", value);
+    // console.log("Received (Hex): ", value);
 
     const dataView = new Uint8Array(value.buffer);
-    console.log("Converted to Uint8Array: ", dataView);
+    console.log("Received: ", dataView);
 
     const decoded = new TextDecoder().decode(dataView);
-    console.log("Uint8Array decoded: ", decoded);
+    console.log("Decoded: ", decoded);
 
     // Extract the engine RPM data (assuming byteA and byteB are the RPM bytes)
     // const byteA = dataView[0];
@@ -112,9 +112,9 @@ export default function Home() {
       const commandArray = new TextEncoder().encode(commandString);
 
       // Send the command to the ELM327 adapter
-      console.log("Sending: ", command, " as ", commandArray, " to device...");
+      console.log("[Sending]: ", command, " as ", commandArray, " ...");
       await writeCharacteristic.writeValue(commandArray);
-      console.log("Sent successfully!");
+      // console.log("Sent successfully!");
     } catch (error) {
       console.error("Error sending OBD command:", error);
     }
