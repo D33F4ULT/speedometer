@@ -14,6 +14,9 @@ export default function Home() {
 
   const [speed, setSpeed] = useState(0);
   const [rpm, setRpm] = useState(0);
+  const [loopEnabled, setLoopEnabled] = useState(false);
+  const [loopIntervalId, setLoopIntervalId] = useState(null);
+
   const { isLandscape, isReverseLandscape } = useOrientationStates();
 
   const combinedUUID = "0000fff0-0000-1000-8000-00805f9b34fb";
@@ -142,6 +145,35 @@ export default function Home() {
     }
   }
 
+  async function loop(enabled) {
+    if (enabled === false) {
+      return;
+    }
+
+    await sendObdCommand("010D");
+  }
+
+  function startLoop() {
+    // Clear any existing interval
+    stopLoop();
+
+    // Start a new interval to call the loop function
+    const intervalId = setInterval(() => {
+      loop(true);
+    }, 500);
+
+    // Update the interval ID in the state
+    setLoopIntervalId(intervalId);
+    setLoopEnabled(true);
+  }
+
+  function stopLoop() {
+    // Clear the interval and reset loopEnabled
+    clearInterval(loopIntervalId);
+    setLoopIntervalId(null);
+    setLoopEnabled(false);
+  }
+
   return (
     <main className="relative flex min-h-screen flex-col p-2 items-center justify-center overflow-hidden bg-black">
       {/* PORTRAIT MODE */}
@@ -176,6 +208,13 @@ export default function Home() {
                 }
               >
                 {isListeningForNotifications.toString()}
+              </span>
+            </li>
+
+            <li>
+              Loop Enabled:{" "}
+              <span className={loopEnabled ? "text-green-600" : "text-red-500"}>
+                {loopEnabled.toString()}
               </span>
             </li>
           </ul>
@@ -262,6 +301,21 @@ export default function Home() {
           >
             010D - Vehicle speed
           </button>
+
+          <div className="flex gap-4">
+            <button
+              onClick={startLoop}
+              className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
+            >
+              Start loop
+            </button>
+            <button
+              onClick={stopLoop}
+              className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
+            >
+              Stop loop
+            </button>
+          </div>
 
           {/* <p>Server: {serverData || "no data"}</p> */}
           <div className=" flex flex-col max-w-[500px] w-full">
