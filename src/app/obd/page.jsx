@@ -82,7 +82,7 @@ export default function Home() {
 
   // Process received notifications
   function handleCharacteristicValueChanged(event) {
-    console.log("[NEW NOTIFICATION]");
+    console.log("[RECEIVED DATA]");
     const value = event.target.value;
     console.log("Received (Hex): ", value);
 
