@@ -82,7 +82,7 @@ export default function Home() {
 
   // Process received notifications
   function handleCharacteristicValueChanged(event) {
-    console.log("Characteristic1 Value Changed!");
+    console.log("[NEW NOTIFICATION]");
     const value = event.target.value;
     console.log("Received (Hex): ", value);
 
@@ -108,12 +108,11 @@ export default function Home() {
   async function sendObdCommand(command) {
     try {
       // Convert the ASCII command to Uint8Array
-      console.log("Converting ", command, " to Uint8Array...");
       const commandString = command + "\r"; // Include the "\r" character
       const commandArray = new TextEncoder().encode(commandString);
 
       // Send the command to the ELM327 adapter
-      console.log("Sending: ", commandArray, " to device...");
+      console.log("Sending: ", command, " as ", commandArray, " to device...");
       await writeCharacteristic.writeValue(commandArray);
       console.log("Sent successfully!");
     } catch (error) {
