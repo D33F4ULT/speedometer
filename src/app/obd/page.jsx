@@ -82,15 +82,15 @@ export default function Home() {
 
   // Process received notifications
   function handleCharacteristicValueChanged(event) {
-    console.log("[RECEIVED DATA]");
+    console.log("-- [RECEIVED DATA]");
     const value = event.target.value;
     // console.log("Received (Hex): ", value);
 
     const dataView = new Uint8Array(value.buffer);
-    console.log("Received: ", dataView);
+    console.log("-- Received bytes: ", dataView);
 
     const decoded = new TextDecoder().decode(dataView);
-    console.log("Decoded: ", decoded);
+    console.log("-- Decoded: ", decoded);
 
     // Extract the engine RPM data (assuming byteA and byteB are the RPM bytes)
     // const byteA = dataView[0];
@@ -112,11 +112,11 @@ export default function Home() {
       const commandArray = new TextEncoder().encode(commandString);
 
       // Send the command to the ELM327 adapter
-      console.log("[Sending]: ", command, " as ", commandArray, " ...");
+      console.log("[Sending]: ", command, " as ", commandArray);
       await writeCharacteristic.writeValue(commandArray);
       // console.log("Sent successfully!");
     } catch (error) {
-      console.error("Error sending OBD command:", error);
+      console.error("[Error sending OBD command]:", error);
     }
   }
 
@@ -174,6 +174,12 @@ export default function Home() {
             ATZ - Reset and returns ELM identification
           </button>
           <button
+            onClick={() => sendObdCommand("ATE0")}
+            className=" bg-slate-200 mt-2 text-black active:scale-95 px-2"
+          >
+            ATE0 - Turn off echo
+          </button>
+          <button
             onClick={() => sendObdCommand("ATL0")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
@@ -183,40 +189,34 @@ export default function Home() {
             onClick={() => sendObdCommand("ATS0")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
-            ATS0 - Disable spaces in in output
+            ATS0 - ?Disable spaces in in output
           </button>
-          <button
+          {/* <button
             onClick={() => sendObdCommand("ATH0")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
             ATH0 - Turn off headers
-          </button>
-          <button
-            onClick={() => sendObdCommand("ATE0")}
-            className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
-          >
-            ATE0 - Turn off echo
-          </button>
+          </button> */}
           <button
             onClick={() => sendObdCommand("ATAT2")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
-            ATAT2 - Set adaptive timing to 2
+            ATAT2 - ?Set adaptive timing to 2
           </button>
-          <button
+          {/* <button
             onClick={() => sendObdCommand("ATSP0")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
             ATSP0 - Set Protocol to auto
-          </button>
+          </button> */}
+
+          <p>GET COMMANDS:</p>
           <button
             onClick={() => sendObdCommand("ATRV")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
           >
             ATRV - Read Volatage
           </button>
-
-          <p>GET COMMANDS:</p>
           <button
             onClick={() => sendObdCommand("010C")}
             className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
