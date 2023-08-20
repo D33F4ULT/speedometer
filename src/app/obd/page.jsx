@@ -79,9 +79,8 @@ export default function Home() {
   function handleCharacteristicValueChanged(event) {
     console.log("Characteristic1 Value Changed!");
     const value = event.target.value;
-    console.log("Received: ", value);
+    console.log("Received (Hex): ", value);
 
-    // Convert the received DataView to a Uint8Array
     const dataView = new Uint8Array(value.buffer);
     console.log("Received data converted to Uint8Array: ", dataView);
 
@@ -105,7 +104,8 @@ export default function Home() {
     try {
       // Convert the ASCII command to Uint8Array
       console.log("Converting ", command, " to Uint8Array...");
-      const commandArray = new TextEncoder().encode(command);
+      const commandString = command + "\r"; // Include the "\r" character
+      const commandArray = new TextEncoder().encode(commandString);
 
       // Send the command to the ELM327 adapter
       console.log("Sending: ", commandArray, " to device...");
