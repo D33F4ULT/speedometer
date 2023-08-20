@@ -209,6 +209,12 @@ export default function Home() {
           >
             ATSP0 - Set Protocol to auto
           </button>
+          <button
+            onClick={() => sendObdCommand("ATRV")}
+            className="bg-slate-200 mt-2 text-black active:scale-95 px-2"
+          >
+            ATRV - Read Volatage
+          </button>
 
           <p>GET COMMANDS:</p>
           <button
